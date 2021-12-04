@@ -9,12 +9,12 @@ const addCategory = async (name) => {
   return { status: 201, message: dataValues };
 };
 
-// const listUsers = async () => {
-//   const users = await Users
-//     .findAll({ attributes: ['id', 'displayName', 'email', 'password', 'image'] });
+const listCategories = async () => {
+  const categories = await Categories
+    .findAll({ attributes: ['id', 'name'] });
 
-//   return { status: 200, message: users };
-// };
+  return { status: 200, message: categories };
+};
 
 // const getUserById = async (id) => {
 //   const user = await Users.findByPk(id);
@@ -25,4 +25,4 @@ const addCategory = async (name) => {
 //   return { status: 200, message: user };
 // };
 
-module.exports = { addCategory };
+module.exports = { addCategory, listCategories };

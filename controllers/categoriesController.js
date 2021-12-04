@@ -10,11 +10,11 @@ router.post('/', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
-// router.get('/', payload, async (req, res) => {
-//   const { status, message } = await users.listUsers();
+router.get('/', payload, async (req, res) => {
+  const { status, message } = await categories.listCategories();
 
-//   return res.status(status).json(message);
-// });
+  return res.status(status).json(message);
+});
 
 // router.get('/:id', payload, async (req, res) => {
 //   const { id } = req.params;
