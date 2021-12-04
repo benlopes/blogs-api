@@ -12,6 +12,8 @@ app.use('/user', controller.users);
 
 app.post('/login', controller.login);
 
+app.use('/categories', controller.categories);
+
 app.listen(3000, () => console.log('ouvindo porta 3000!'));
 
 // não remova esse endpoint, e para o avaliador funcionar
