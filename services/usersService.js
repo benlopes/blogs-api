@@ -20,9 +20,19 @@ const addUser = async ({ displayName, email, password, image = null }) => {
 };
 
 const listUsers = async () => {
-  const users = await Users.findAll({ attributes: ['id', 'displayName', 'email', 'password', 'image'] });
+  const users = await Users
+    .findAll({ attributes: ['id', 'displayName', 'email', 'password', 'image'] });
 
   return { status: 200, message: users };
 };
 
-module.exports = { addUser, listUsers };
+const getUserById = async (id) => {
+  const user = await Users.findByPk(id);
+
+  console.log('user:', user);
+  if (!user) return { status: 404, message: 'User does not exist' };
+  console.log('user2:', user);
+  return { status: 200, message: user };
+};
+
+module.exports = { addUser, listUsers, getUserById };
