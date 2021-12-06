@@ -26,7 +26,7 @@ const login = async (req, res) => {
 
   if (!exists) return res.status(400).json({ message: 'Invalid fields' });
 
-  const payload = { email };
+  const payload = { email, id: exists.dataValues.id };
   const token = jwt.sign(payload, secret, jwtConfig);
 
   return res.status(200).json({ token });

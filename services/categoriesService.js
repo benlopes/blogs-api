@@ -1,7 +1,6 @@
 const { Categories } = require('../models');
 
 const addCategory = async (name) => {
-
   if (!name) return { status: 400, message: '"name" is required' };
 
   const { dataValues } = await Categories.create({ name });
