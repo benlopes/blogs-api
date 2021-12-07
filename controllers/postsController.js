@@ -10,10 +10,10 @@ router.post('/', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
-// router.get('/', payload, async (req, res) => {
-//   const { status, message } = await posts.listCategories();
+router.get('/', payload, async (req, res) => {
+  const { status, message } = await posts.getPosts();
 
-//   return res.status(status).json(message);
-// });
+  return res.status(status).json(message);
+});
 
 module.exports = router;

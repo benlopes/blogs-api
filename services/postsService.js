@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { BlogPosts, Categories } = require('../models');
+const { BlogPosts, Categories, Users, PostsCategories } = require('../models');
 
 const postSchema = Joi.object({
   title: Joi.string().required(),
@@ -11,6 +11,11 @@ const postSchema = Joi.object({
 const categoryExists = async (ids) => {
   const result = await Categories.findOne({ where: { id: ids[0] } });
 
+  return result;
+};
+
+const createPostsCategory = async (categoryId, postId) => {
+  const result = await PostsCategories.create({ categoryId, postId });
   return result;
 };
 
@@ -33,23 +38,21 @@ const addPost = async (body) => {
 
   const { dataValues } = await BlogPosts.create(post);
 
+  await body.categoryIds.forEach(async (categoryId) => {
+    await createPostsCategory(categoryId, body.id);
+  });
+
   return { status: 201, message: dataValues };
 };
 
-// const listCategories = async () => {
-//   const categories = await Categories
-//     .findAll({ attributes: ['id', 'name'] });
+const getPosts = async () => {
+  const posts = await BlogPosts.findAll({ include:
+    [
+      { model: Users, as: 'user', attributes: { exclude: ['password'] } }, 
+      { model: Categories, as: 'categories', through: { attributes: [] } },
+    ] });
 
-//   return { status: 200, message: categories };
-// };
+  return { status: 200, message: posts };
+};
 
-// const getUserById = async (id) => {
-//   const user = await Users.findByPk(id);
-
-//   console.log('user:', user);
-//   if (!user) return { status: 404, message: 'User does not exist' };
-//   console.log('user2:', user);
-//   return { status: 200, message: user };
-// };
-
-module.exports = { addPost };
+module.exports = { addPost, getPosts };
