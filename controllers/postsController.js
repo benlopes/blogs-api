@@ -16,4 +16,14 @@ router.get('/', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
+router.get('/:id', payload, async (req, res) => {
+  const { id } = req.params;
+
+  const { status, message } = await posts.getPostById(id);
+
+  if (status === 404) return res.status(status).json({ message });
+
+  return res.status(status).json(message);
+});
+
 module.exports = router;

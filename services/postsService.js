@@ -55,4 +55,19 @@ const getPosts = async () => {
   return { status: 200, message: posts };
 };
 
-module.exports = { addPost, getPosts };
+const getPostById = async (id) => {
+  // const post = await BlogPosts.findByPk(id);
+  const post = await BlogPosts.findAll({ where: { id },
+    include: [
+      { model: Users, as: 'user', attributes: { exclude: ['password'] } }, 
+      { model: Categories, as: 'categories', through: { attributes: [] } },
+    ], 
+  });
+
+  if (!post || post.length === 0) return { status: 404, message: 'Post does not exist' };
+
+  console.log('post:', post[0].dataValues);
+  return { status: 200, message: post[0].dataValues };
+};
+
+module.exports = { addPost, getPosts, getPostById };
