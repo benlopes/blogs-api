@@ -8,6 +8,11 @@ const postSchema = Joi.object({
   id: Joi.required(),
 });
 
+const editPostSchema = Joi.object({
+  title: Joi.string().required(),
+  content: Joi.string().required(),
+});
+
 const categoryExists = async (ids) => {
   const result = await Categories.findOne({ where: { id: ids[0] } });
 
@@ -56,7 +61,6 @@ const getPosts = async () => {
 };
 
 const getPostById = async (id) => {
-  // const post = await BlogPosts.findByPk(id);
   const post = await BlogPosts.findAll({ where: { id },
     include: [
       { model: Users, as: 'user', attributes: { exclude: ['password'] } }, 
@@ -70,4 +74,31 @@ const getPostById = async (id) => {
   return { status: 200, message: post[0].dataValues };
 };
 
-module.exports = { addPost, getPosts, getPostById };
+const editPost = async ({ postId, userId, title, content, categoryIds }) => {
+  if (categoryIds) return { status: 400, message: 'Categories cannot be edited' };
+
+  const validateEditPost = editPostSchema
+    .validate({ title, content });
+
+  if (validateEditPost.error) {
+    return { status: 400, message: validateEditPost.error.details[0] };
+  }
+
+  const { dataValues } = await BlogPosts.findByPk(postId);
+
+  if (userId !== dataValues.userId) return { status: 401, message: 'Unauthorized user' };
+  
+  await BlogPosts.update(
+    { title, content },
+    { where: { id: postId } },
+  );
+  
+  const edited = await BlogPosts.findAll({ where: { id: postId },
+    include: [{ model: Categories, as: 'categories', through: { attributes: [] } }], 
+  });
+  console.log('edited:', edited[0].dataValues);
+
+  return { status: 200, message: edited[0].dataValues };
+};
+
+module.exports = { addPost, getPosts, getPostById, editPost };

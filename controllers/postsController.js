@@ -26,4 +26,18 @@ router.get('/:id', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
+router.put('/:id', payload, async (req, res) => {
+  const { id } = req.params;
+  const { title, content, categoryIds = null } = req.body;
+
+  const { status, message } = await posts
+    .editPost({ postId: id, userId: req.userId, title, content, categoryIds });
+
+  if (status === 404) return res.status(status).json({ message });
+  if (status === 401) return res.status(status).json({ message });
+  if (categoryIds) return res.status(status).json({ message });
+
+  return res.status(status).json(message);
+});
+
 module.exports = router;
