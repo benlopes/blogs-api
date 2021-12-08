@@ -96,9 +96,22 @@ const editPost = async ({ postId, userId, title, content, categoryIds }) => {
   const edited = await BlogPosts.findAll({ where: { id: postId },
     include: [{ model: Categories, as: 'categories', through: { attributes: [] } }], 
   });
-  console.log('edited:', edited[0].dataValues);
 
   return { status: 200, message: edited[0].dataValues };
 };
 
-module.exports = { addPost, getPosts, getPostById, editPost };
+const deletePost = async ({ postId, userId }) => {
+  const post = await BlogPosts.findByPk(postId);
+
+  if (!post) return { status: 404, message: 'Post does not exist' };
+  
+  const { dataValues } = post;
+
+  if (userId !== dataValues.userId) return { status: 401, message: 'Unauthorized user' };
+  
+  await BlogPosts.destroy({ where: { id: postId } });
+
+  return { status: 204, message: null };
+};
+
+module.exports = { addPost, getPosts, getPostById, editPost, deletePost };

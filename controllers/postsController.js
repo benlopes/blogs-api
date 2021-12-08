@@ -40,4 +40,14 @@ router.put('/:id', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
+router.delete('/:id', payload, async (req, res) => {
+  const { status, message } = await posts
+    .deletePost({ postId: req.params.id, userId: req.userId });
+
+  if (status === 404) return res.status(status).json({ message });
+  if (status === 401) return res.status(status).json({ message });
+
+  return res.status(status).json(message);
+});
+
 module.exports = router;
