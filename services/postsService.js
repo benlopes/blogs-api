@@ -103,6 +103,9 @@ const editPost = async ({ postId, userId, title, content, categoryIds }) => {
 
 const deletePost = async ({ postId, userId }) => {
   const post = await BlogPosts.findByPk(postId);
+  console.log('--------------------');
+  console.log('post:', post);
+  console.log('--------------------');
 
   if (!post) return { status: 404, message: 'Post does not exist' };
   

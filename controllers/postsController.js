@@ -55,6 +55,7 @@ router.delete('/:id', payload, async (req, res) => {
     .deletePost({ postId: req.params.id, userId: req.userId });
 
   if (status === 401) return res.status(status).json({ message });
+  if (status === 404) return res.status(status).json({ message });
 
   return res.status(status).json(message);
 });
