@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { Op } = require('sequelize');
 const { BlogPosts, Categories, Users, PostsCategories } = require('../models');
 
 const postSchema = Joi.object({
@@ -114,4 +115,20 @@ const deletePost = async ({ postId, userId }) => {
   return { status: 204, message: null };
 };
 
-module.exports = { addPost, getPosts, getPostById, editPost, deletePost };
+const queryPost = async (query) => {
+  if (!query) return getPosts();
+
+  const post = await BlogPosts.findAll({
+    where: {
+      [Op.or]: [{ title: query }, { content: query }],
+    },
+    include: [
+      { model: Users, as: 'user', attributes: { exclude: ['password'] } }, 
+      { model: Categories, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  return { status: 200, message: post };
+};
+
+module.exports = { addPost, getPosts, getPostById, editPost, deletePost, queryPost };
