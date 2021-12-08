@@ -27,4 +27,11 @@ router.get('/:id', payload, async (req, res) => {
   return res.status(status).json(message);
 });
 
+router.delete('/me', payload, async (req, res) => {
+  const { status, message } = await users
+    .deleteUser({ userId: req.userId });
+
+  return res.status(status).json(message);
+});
+
 module.exports = router;
